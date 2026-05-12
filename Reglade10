@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🎨 La Regla de los 10 Minutos — Libro Mágico para Colorear</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800;900&family=Chewy&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════════════ */
+:root{
+  --ink:#1A1208; --cream:#FFFEF9; --warm:#FFF8ED;
+  --brown:#6B3F1A; --amber:#E8890C; --gold:#F5C842;
+  --blush:#FFD6E0; --sage:#A8D5A2; --sky:#A8D8F0;
+  --lavender:#C9B8F0; --peach:#FFB877;
+  --r:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{
+  width:100%;height:100%;overflow:hidden;
+  background:radial-gradient(ellipse at center, #3D1C08 0%, #1A0A03 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Nunito',sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   BOOK SHELL — looks like a real children's book
+═══════════════════════════════════════════ */
+.book{
+  width:min(430px,100vw);
+  height:min(660px,100vh);
+  position:relative;overflow:hidden;
+  border-radius:4px 20px 20px 4px;
+  box-shadow:
+    -8px 0 0 #3D1C08,
+    -14px 0 0 #5C2D0A,
+    -18px 4px 12px rgba(0,0,0,.6),
+    8px 8px 40px rgba(0,0,0,.6),
+    inset -4px 0 8px rgba(0,0,0,.08);
+}
+/* spine strip */
+.book::before{
+  content:'';position:absolute;left:0;top:0;width:14px;height:100%;
+  background:linear-gradient(90deg,#3D1C08,#6B3F1A);
+  z-index:200;border-radius:4px 0 0 4px;
+}
+
+/* ═══════════════════════════════════════════
+   PAGES
+═══════════════════════════════════════════ */
+.page{
+  position:absolute;inset:0;left:14px;
+  display:flex;flex-direction:column;
+  background:var(--cream);
+  opacity:0;pointer-events:none;
+  transform:translateX(110%) rotateY(-8deg);
+  transform-origin:left center;
+  transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .4s;
+  overflow:hidden;
+}
+.page.active{opacity:1;pointer-events:all;transform:translateX(0) rotateY(0);}
+.page.gone{opacity:0;transform:translateX(-110%) rotateY(8deg);}
+
+/* ═══════════════════════════════════════════
+   NAV BAR
+═══════════════════════════════════════════ */
+.nav{
+  position:absolute;bottom:0;left:0;right:0;height:52px;
+  background:linear-gradient(to top,rgba(255,253,245,1),rgba(255,253,245,.8));
+  border-top:1.5px solid rgba(0,0,0,.07);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;z-index:80;
+}
+.nbtn{
+  border:none;border-radius:50px;padding:8px 16px;
+  font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;
+  cursor:pointer;transition:all .18s;color:#fff;
+  display:flex;align-items:center;gap:5px;
+}
+.nbtn:active{transform:scale(.92);}
+.nbtn-back{background:#BDB0A0;color:var(--ink);}
+.nbtn-next{background:var(--amber);box-shadow:0 4px 12px rgba(232,137,12,.4);}
+.nbtn-special{background:var(--brown);box-shadow:0 4px 12px rgba(107,63,26,.4);}
+.nbtn:disabled{opacity:.2;cursor:default;transform:none!important;}
+.pg-dots{display:flex;gap:4px;align-items:center;}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(0,0,0,.15);transition:all .3s;}
+.dot.on{background:var(--amber);width:14px;border-radius:3px;}
+
+/* ═══════════════════════════════════════════
+   PAPER TEXTURE overlays
+═══════════════════════════════════════════ */
+.paper-texture{
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(0,0,0,.025) 28px),
+    url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+}
+
+/* ═══════════════════════════════════════════
+   ── PAGE 0: COVER ──
+═══════════════════════════════════════════ */
+#p0{
+  background:
+    radial-gradient(ellipse at 30% 20%, #FFE0A3 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 80%, #FFB6C1 0%, transparent 50%),
+    linear-gradient(160deg,#FFF4D6 0%,#FFE4B0 40%,#FFD0A0 70%,#FFC890 100%);
+}
+.cover-wrap{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:10px;padding:24px 20px 58px;text-align:center;z-index:2;
+}
+.cover-ribbon{
+  background:var(--brown);color:#fff;font-size:10px;font-weight:900;
+  letter-spacing:2px;text-transform:uppercase;padding:5px 20px;
+  border-radius:50px;box-shadow:0 3px 10px rgba(107,63,26,.3);
+}
+.cover-animals-row{
+  display:flex;gap:4px;justify-content:center;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.15));
+}
+.cov-a{
+  font-size:36px;display:inline-block;
+  animation:wa 2s ease-in-out infinite;
+}
+.cov-a:nth-child(1){animation-delay:.0s;}
+.cov-a:nth-child(2){animation-delay:.2s;}
+.cov-a:nth-child(3){animation-delay:.4s;}
+.cov-a:nth-child(4){animation-delay:.6s;}
+.cov-a:nth-child(5){animation-delay:.8s;}
+@keyframes wa{0%,100%{transform:translateY(0) rotate(-3deg);}50%{transform:translateY(-8px) rotate(3deg);}}
+.cover-title{
+  font-family:'Chewy',cursive;font-size:42px;
+  color:var(--brown);text-shadow:3px 3px 0 rgba(255,255,255,.6);
+  line-height:1;letter-spacing:.5px;
+}
+.cover-sub{
+  font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;
+  color:rgba(107,63,26,.8);line-height:1.3;
+}
+.cover-pill{
+  background:var(--brown);color:var(--gold);
+  font-weight:900;font-size:12px;padding:8px 22px;border-radius:50px;
+  box-shadow:0 4px 14px rgba(107,63,26,.25);display:flex;align-items:center;gap:6px;
+}
+.cover-promise{
+  background:rgba(255,255,255,.65);backdrop-filter:blur(8px);
+  border:2px solid rgba(255,255,255,.8);border-radius:16px;
+  padding:10px 16px;font-size:12px;font-weight:700;
+  color:rgba(107,63,26,.85);line-height:1.5;max-width:310px;
+}
+.cover-promise strong{color:var(--amber);}
+.cover-mama{
+  font-size:52px;
+  filter:drop-shadow(0 6px 12px rgba(0,0,0,.15));
+  animation:mama-float 3s ease-in-out infinite;
+}
+@keyframes mama-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+
+/* ═══════════════════════════════════════════
+   ── STANDARD TEXT PAGES ──
+═══════════════════════════════════════════ */
+.txt-page{background:var(--cream);}
+.txt-body{
+  flex:1;overflow:hidden;display:flex;flex-direction:column;
+  gap:11px;padding:18px 18px 58px;z-index:2;
+}
+.pg-label{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--brown);color:var(--gold);
+  font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;
+  padding:4px 14px;border-radius:50px;align-self:flex-start;
+}
+.pg-h1{
+  font-family:'Baloo 2',cursive;font-size:22px;font-weight:900;
+  color:var(--ink);line-height:1.1;
+}
+.pg-h1 em{color:var(--amber);font-style:normal;}
+.body-p{font-size:13px;font-weight:700;color:#555;line-height:1.65;}
+.body-p strong{color:var(--brown);}
+.card{
+  background:var(--warm);border-radius:14px;padding:10px 13px;
+  display:flex;align-items:flex-start;gap:10px;
+  border-left:4px solid var(--amber);
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+.card-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.card-t{font-size:13px;font-weight:800;color:var(--ink);}
+.card-s{font-size:11px;font-weight:700;color:#888;margin-top:2px;}
+.tip-box{
+  background:linear-gradient(135deg,#FFF3DC,#FFE8B5);
+  border-radius:14px;padding:11px 14px;
+  border-left:4px solid var(--gold);
+  font-size:12px;font-weight:700;color:#6B4A00;line-height:1.55;
+}
+.tip-box strong{color:var(--brown);}
+
+/* ═══════════════════════════════════════════
+   ── INDEX PAGE ──
+═══════════════════════════════════════════ */
+.idx-list{display:flex;flex-direction:column;gap:7px;}
+.idx-item{
+  background:var(--warm);border-radius:12px;padding:9px 13px;
+  display:flex;align-items:center;gap:9px;
+  border-left:4px solid var(--peach);cursor:pointer;
+  transition:transform .15s;
+}
+.idx-item:active{transform:translateX(5px);}
+.idx-e{font-size:18px;flex-shrink:0;}
+.idx-t{font-size:13px;font-weight:800;color:var(--ink);flex:1;}
+.idx-pg{font-size:11px;font-weight:700;color:#C0A880;}
+
+/* ═══════════════════════════════════════════
+   ── TIMER PAGE ──
+═══════════════════════════════════════════ */
+.timer-card{
+  background:var(--brown);border-radius:20px;padding:18px;
+  text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;
+  box-shadow:0 8px 24px rgba(107,63,26,.35);
+}
+.timer-n{
+  font-family:'Chewy',cursive;font-size:70px;color:var(--gold);
+  line-height:1;text-shadow:0 0 30px rgba(245,200,66,.4);
+  letter-spacing:2px;
+}
+.timer-l{font-size:12px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px;}
+.t-btn{
+  background:var(--gold);color:var(--brown);border:none;border-radius:50px;
+  padding:10px 28px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;
+  cursor:pointer;box-shadow:0 4px 14px rgba(245,200,66,.4);transition:all .2s;
+}
+.t-btn:active{transform:scale(.94);}
+.age-guide{
+  display:flex;gap:6px;
+}
+.age-pill{
+  flex:1;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);
+  border-radius:10px;padding:7px 4px;text-align:center;
+  font-size:10px;font-weight:800;color:rgba(255,255,255,.75);line-height:1.4;
+}
+.age-pill strong{color:var(--gold);font-size:13px;display:block;}
+
+/* ═══════════════════════════════════════════
+   ── COLORING PAGES ──
+═══════════════════════════════════════════ */
+.color-page{background:var(--cream);}
+.color-layout{
+  flex:1;display:flex;flex-direction:column;
+  padding:10px 12px 56px;gap:7px;z-index:2;overflow:hidden;
+}
+.animal-hdr{display:flex;align-items:center;gap:9px;}
+.a-badge{
+  background:var(--brown);color:var(--gold);
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:13px;flex-shrink:0;
+}
+.a-name{font-family:'Baloo 2',cursive;font-size:20px;font-weight:900;color:var(--ink);}
+.a-lesson{
+  background:linear-gradient(135deg,var(--warm),#FFE8B5);
+  border-radius:8px;padding:4px 11px;
+  font-size:11px;font-weight:800;color:var(--brown);
+  display:inline-flex;align-items:center;gap:5px;
+  border:1.5px solid rgba(232,137,12,.2);
+}
+
+/* SVG drawing area */
+.drawing-area{
+  flex:1;min-height:0;
+  background:#fff;border-radius:16px;
+  border:2px dashed rgba(0,0,0,.1);
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.04);
+}
+.drawing-area svg{width:100%;height:100%;max-height:240px;}
+
+/* Colour palette */
+.palette{
+  display:flex;gap:5px;justify-content:center;flex-wrap:nowrap;
+  overflow-x:auto;padding:2px 0;
+}
+.palette::-webkit-scrollbar{display:none;}
+.swatch{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  border:3px solid transparent;cursor:pointer;transition:all .18s;
+  box-shadow:0 2px 6px rgba(0,0,0,.18);
+}
+.swatch.on{border-color:var(--ink);transform:scale(1.22);}
+.swatch:active{transform:scale(.88);}
+
+.tools{display:flex;gap:7px;justify-content:center;}
+.tool{
+  background:rgba(0,0,0,.06);border:none;border-radius:10px;
+  padding:6px 13px;font-family:'Nunito',sans-serif;
+  font-size:12px;font-weight:800;cursor:pointer;
+  transition:all .18s;color:var(--ink);display:flex;align-items:center;gap:4px;
+}
+.tool:active{transform:scale(.93);}
+.tool.er{background:rgba(232,137,12,.12);color:var(--amber);}
+
+.fact{
+  background:linear-gradient(135deg,#FFF8E6,#FFF3D0);
+  border-left:4px solid var(--gold);border-radius:0 10px 10px 0;
+  padding:7px 11px;font-size:11px;font-weight:700;color:#7A5500;line-height:1.45;
+}
+.fact strong{color:var(--brown);}
+
+/* ═══════════════════════════════════════════
+   ── ROUTINE / DIPLOMA / FINAL ──
+═══════════════════════════════════════════ */
+.time-row{
+  background:#fff;border-radius:13px;padding:10px 13px;
+  display:flex;align-items:center;gap:11px;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+.time-tag{
+  border-radius:9px;padding:6px 9px;font-size:10px;font-weight:900;
+  color:#fff;min-width:52px;text-align:center;line-height:1.3;flex-shrink:0;
+}
+.morn{background:linear-gradient(135deg,#FFB347,#FF8C00);}
+.noon{background:linear-gradient(135deg,#52C87A,#2ECC71);}
+.nght{background:linear-gradient(135deg,#6B8EFF,#4568DC);}
+.time-items{flex:1;}
+.ti{font-size:12px;font-weight:800;color:var(--ink);padding:1px 0;display:flex;align-items:center;gap:5px;}
+
+.dip-frame{
+  background:linear-gradient(160deg,#FFFBEF,#FFF5D0);
+  border:3px solid var(--gold);border-radius:18px;
+  padding:16px 18px;text-align:center;position:relative;
+  box-shadow:inset 0 0 0 1.5px rgba(245,200,66,.3), 0 6px 20px rgba(232,137,12,.15);
+}
+.dip-frame::before{
+  content:'✦ ✦ ✦';position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+  background:var(--cream);padding:0 8px;color:var(--gold);font-size:14px;letter-spacing:5px;
+}
+.dip-top{font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#C0A000;}
+.dip-main{font-family:'Chewy',cursive;font-size:24px;color:var(--brown);margin:4px 0;}
+.dip-sub{font-size:11px;font-weight:700;color:#888;margin-bottom:8px;}
+.dip-in{
+  border:2px dashed var(--gold);background:rgba(245,200,66,.08);
+  border-radius:8px;padding:6px;width:100%;
+  font-family:'Chewy',cursive;font-size:20px;color:var(--brown);
+  text-align:center;outline:none;margin-bottom:6px;
+}
+.dip-in::placeholder{color:#D4C080;font-size:14px;}
+.dip-animals-row{font-size:24px;letter-spacing:3px;margin:3px 0;}
+.dip-footer{font-size:9px;color:#C0A880;border-top:1px solid #EEE;padding-top:6px;margin-top:4px;line-height:1.5;}
+
+/* FINAL page */
+#p13{
+  background:radial-gradient(ellipse at 40% 30%,#FFE0A3 0%,transparent 60%),
+             linear-gradient(160deg,#FFF4D6 0%,#FFDFA0 60%,#FFD080 100%);
+}
+.final-wrap{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:13px;padding:28px 22px 58px;text-align:center;z-index:2;
+}
+.final-big{font-family:'Chewy',cursive;font-size:38px;color:var(--brown);text-shadow:2px 2px 0 rgba(255,255,255,.6);}
+.final-sub{font-size:14px;font-weight:700;color:rgba(107,63,26,.8);line-height:1.55;max-width:320px;}
+.final-box{
+  background:rgba(255,255,255,.6);backdrop-filter:blur(8px);
+  border:2px solid rgba(255,255,255,.8);border-radius:14px;
+  padding:12px 16px;font-size:12px;font-weight:700;
+  color:rgba(107,63,26,.85);line-height:1.55;width:100%;max-width:330px;
+}
+.final-box strong{color:var(--amber);}
+.restart{
+  background:var(--brown);color:var(--gold);border:none;border-radius:50px;
+  padding:12px 30px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;
+  cursor:pointer;box-shadow:0 6px 20px rgba(107,63,26,.35);transition:all .2s;
+}
+.restart:active{transform:scale(.94);}
+.credit{font-size:10px;color:rgba(107,63,26,.45);font-weight:700;}
+
+/* confetti */
+#cb{position:fixed;inset:0;pointer-events:none;z-index:1000;overflow:hidden;}
+.cf{position:absolute;width:9px;height:9px;animation:cf linear forwards;border-radius:2px;}
+@keyframes cf{0%{transform:translateY(-10px) rotate(0);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-height:580px){
+  .drawing-area{max-height:170px;}
+  .cover-title{font-size:34px;}
+  .cover-mama{font-size:42px;}
+}
+</style>
+</head>
+<body>
+<div id="cb"></div>
+
+<div class="book" id="book">
+
+<!-- ═══════════════ P0 COVER ═══════════════ -->
+<div class="page active" id="p0">
+  <div style="position:absolute;inset:0;background:
+    radial-gradient(ellipse at 30% 15%, rgba(255,255,255,.5) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 75%, rgba(255,200,160,.6) 0%, transparent 50%);z-index:0;pointer-events:none;"></div>
+  <div class="cover-wrap">
+    <div class="cover-ribbon">📚 Libro Interactivo para Colorear</div>
+    <div class="cover-mama">👩‍👦</div>
+    <div class="cover-title">La Regla de los<br>10 Minutos</div>
+    <div class="cover-animals-row">
+      <span class="cov-a">🐰</span>
+      <span class="cov-a">🐶</span>
+      <span class="cov-a">🐿️</span>
+      <span class="cov-a">🦊</span>
+      <span class="cov-a">🐻</span>
+    </div>
+    <div class="cover-sub">Colorea · Aprende · Mamá descansa ☕</div>
+    <div class="cover-promise">
+      <strong>✨ El secreto que funciona:</strong> Mientras tu niño colorea a sus amigos animales, mamá tiene <strong>10 minutos de paz</strong> para recargar energía.
+    </div>
+    <div class="cover-pill">🎯 Para niños de 2 a 6 años</div>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" disabled>←</button>
+    <div class="pg-dots" id="d0"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P1 CARTA MAMÁS ═══════════════ -->
+<div class="page txt-page" id="p1">
+  <div class="paper-texture"></div>
+  <div class="txt-body">
+    <div class="pg-label">💌 Carta para mamá</div>
+    <div class="pg-h1">¿Por qué este libro<br><em>te va a cambiar el día?</em></div>
+    <div class="body-p">Sabemos que criar es <strong>el trabajo más bonito y agotador</strong> del mundo. Cada día luchas con las mismas batallas…</div>
+    <div class="card"><div class="card-icon">😩</div><div><div class="card-t">El problema que conoces bien</div><div class="card-s">Los niños no juegan solos más de 2 minutos y mamá nunca descansa de verdad.</div></div></div>
+    <div class="card"><div class="card-icon">🎨</div><div><div class="card-t">La solución que funciona</div><div class="card-s">Colorear activa el foco infantil total. Un niño con lápices puede concentrarse 10–20 min.</div></div></div>
+    <div class="card"><div class="card-icon">🧠</div><div><div class="card-t">El doble beneficio</div><div class="card-s">Mientras colorea aprende valores con sus amigos animales. ¡Sin que te des cuenta!</div></div></div>
+    <div class="card"><div class="card-icon">☕</div><div><div class="card-t">Tu regalo: 10 minutos</div><div class="card-s">Esos 10 minutos de recarga te hacen más paciente, más presente, mejor mamá.</div></div></div>
+    <div class="tip-box"><strong>💡 Así funciona:</strong> Siéntate con tu peque, abre una página de colorear, dale sus lápices y di: <em>"Colorea a Conejita mientras mamá descansa."</em> ¡Es magia real!</div>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d1"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P2 ÍNDICE ═══════════════ -->
+<div class="page txt-page" id="p2">
+  <div class="paper-texture"></div>
+  <div class="txt-body">
+    <div class="pg-label">📋 Contenido</div>
+    <div class="pg-h1">¿Qué vamos a<br><em>colorear hoy?</em></div>
+    <div class="idx-list">
+      <div class="idx-item" onclick="go(1)"><span class="idx-e">⏱️</span><span class="idx-t">La Regla de los 10 Minutos</span><span class="idx-pg">Pág 4</span></div>
+      <div class="idx-item" onclick="go(2)"><span class="idx-e">🐰</span><span class="idx-t">Conejita Rosa — La Amabilidad</span><span class="idx-pg">Pág 5</span></div>
+      <div class="idx-item" onclick="go(3)"><span class="idx-e">🐶</span><span class="idx-t">Perrito Leal — La Amistad</span><span class="idx-pg">Pág 6</span></div>
+      <div class="idx-item" onclick="go(4)"><span class="idx-e">🐿️</span><span class="idx-t">Ardilla Sabia — El Orden</span><span class="idx-pg">Pág 7</span></div>
+      <div class="idx-item" onclick="go(5)"><span class="idx-e">🦊</span><span class="idx-t">Zorrita Lista — Aprender</span><span class="idx-pg">Pág 8</span></div>
+      <div class="idx-item" onclick="go(6)"><span class="idx-e">🐻</span><span class="idx-t">Osito Grande — El Coraje</span><span class="idx-pg">Pág 9</span></div>
+      <div class="idx-item" onclick="go(7)"><span class="idx-e">🐱</span><span class="idx-t">Gatita Dulce — La Calma</span><span class="idx-pg">Pág 10</span></div>
+      <div class="idx-item" onclick="go(9)"><span class="idx-e">⭐</span><span class="idx-t">Lo que aprendí + Rutina</span><span class="idx-pg">Pág 11</span></div>
+      <div class="idx-item" onclick="go(11)"><span class="idx-e">🏆</span><span class="idx-t">Mi Diploma de Artista</span><span class="idx-pg">Pág 13</span></div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d2"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">¡Empezamos! →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P3 TIMER ═══════════════ -->
+<div class="page txt-page" id="p3">
+  <div class="paper-texture"></div>
+  <div class="txt-body">
+    <div class="pg-label">⏱️ La Regla Mágica</div>
+    <div class="pg-h1">Los <em>10 Minutos</em><br>de Paz Total ☕</div>
+    <div class="timer-card">
+      <div class="timer-l">TIEMPO PARA COLOREAR</div>
+      <div class="timer-n" id="tnum">10:00</div>
+      <div class="timer-l" id="tlbl">Mamá puede descansar ☕</div>
+      <div class="age-guide">
+        <div class="age-pill"><strong>5 min</strong>Bebés 2-3</div>
+        <div class="age-pill"><strong>10 min</strong>Niños 4-5</div>
+        <div class="age-pill"><strong>15 min</strong>Grandes 6</div>
+      </div>
+      <button class="t-btn" id="tbtn" onclick="toggleTimer()">▶ Iniciar temporizador</button>
+    </div>
+    <div class="tip-box" style="margin-top:2px;">
+      <strong>🎯 Paso a paso:</strong><br>
+      1. Elige un animal del libro<br>
+      2. Prepara lápices o crayones<br>
+      3. Di: <em>"Colorea a [animal] mientras mamá descansa"</em><br>
+      4. ¡Pon el cronómetro y disfruta tu pausa!
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d3"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">¡A colorear! →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P4 🐰 CONEJITA ═══════════════ -->
+<div class="page color-page" id="p4">
+  <div class="paper-texture"></div>
+  <div class="color-layout">
+    <div class="animal-hdr">
+      <div class="a-badge">1</div>
+      <div>
+        <div class="a-name">🐰 Conejita Rosa</div>
+        <div class="a-lesson">✨ Enseña la Amabilidad</div>
+      </div>
+    </div>
+    <div class="drawing-area" id="da4">
+      <svg viewBox="0 0 280 250" id="svg4" xmlns="http://www.w3.org/2000/svg">
+        <!-- Left ear outer -->
+        <ellipse cx="100" cy="60" rx="13" ry="34" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="4"/>
+        <!-- Left ear inner -->
+        <ellipse cx="100" cy="62" rx="6" ry="24" fill="white" stroke="#1A1208" stroke-width="1.5" class="c" data-n="4"/>
+        <!-- Right ear outer -->
+        <ellipse cx="148" cy="60" rx="13" ry="34" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="4"/>
+        <!-- Right ear inner -->
+        <ellipse cx="148" cy="62" rx="6" ry="24" fill="white" stroke="#1A1208" stroke-width="1.5" class="c" data-n="4"/>
+        <!-- Body -->
+        <ellipse cx="124" cy="178" rx="58" ry="52" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="4"/>
+        <!-- Tummy -->
+        <ellipse cx="124" cy="182" rx="30" ry="34" fill="white" stroke="#1A1208" stroke-width="1.5" stroke-dasharray="4 3" class="c" data-n="4"/>
+        <!-- Head -->
+        <ellipse cx="124" cy="105" rx="44" ry="40" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="4"/>
+        <!-- Cheeks -->
+        <ellipse cx="100" cy="116" rx="13" ry="9" fill="white" stroke="#1A1208" stroke-width="1.2" stroke-dasharray="3 2" class="c" data-n="4"/>
+        <ellipse cx="148" cy="116" rx="13" ry="9" fill="white" stroke="#1A1208" stroke-width="1.2" stroke-dasharray="3 2" class="c" data-n="4"/>
+        <!-- Eyes -->
+        <circle cx="112" cy="98" r="7" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="4"/>
+        <circle cx="136" cy="98" r="7" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="4"/>
+        <circle cx="112" cy="98" r="3.5" fill="#1A1208"/>
+        <circle cx="136" cy="98" r="3.5" fill="#1A1208"/>
+        <circle cx="113.5" cy="96.5" r="1.5" fill="white"/>
+        <circle cx="137.5" cy="96.5" r="1.5" fill="white"/>
+        <!-- Nose -->
+        <ellipse cx="124" cy="111" rx="5" ry="4" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="4"/>
+        <!-- Smile -->
+        <path d="M116,119 Q124,128 132,119" fill="none" stroke="#1A1208" stroke-width="2" stroke-linecap="round"/>
+        <!-- Whiskers -->
+        <line x1="90" y1="111" x2="117" y2="113" stroke="#1A1208" stroke-width="1.5"/>
+        <line x1="90" y1="117" x2="117" y2="115" stroke="#1A1208" stroke-width="1.5"/>
+        <line x1="131" y1="113" x2="158" y2="111" stroke="#1A1208" stroke-width="1.5"/>
+        <line x1="131" y1="115" x2="158" y2="117" stroke="#1A1208" stroke-width="1.5"/>
+        <!-- Arms -->
+        <ellipse cx="84" cy="168" rx="16" ry="10" fill="white" stroke="#1A1208" stroke-width="2.5" transform="rotate(-28,84,168)" class="c" data-n="4"/>
+        <ellipse cx="164" cy="168" rx="16" ry="10" fill="white" stroke="#1A1208" stroke-width="2.5" transform="rotate(28,164,168)" class="c" data-n="4"/>
+        <!-- Bow -->
+        <path d="M111,138 Q124,131 137,138 Q124,147 111,138Z" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="4"/>
+        <circle cx="124" cy="138" r="5" fill="white" stroke="#1A1208" stroke-width="1.5" class="c" data-n="4"/>
+        <!-- Feet -->
+        <ellipse cx="102" cy="220" rx="26" ry="12" fill="white" stroke="#1A1208" stroke-width="2.5" class="c" data-n="4"/>
+        <ellipse cx="148" cy="220" rx="26" ry="12" fill="white" stroke="#1A1208" stroke-width="2.5" class="c" data-n="4"/>
+        <!-- Small flowers decoration -->
+        <circle cx="44" cy="60" r="6" fill="none" stroke="#1A1208" stroke-width="1.2" opacity=".3"/>
+        <circle cx="44" cy="52" r="4" fill="none" stroke="#1A1208" stroke-width="1.2" opacity=".3"/>
+        <circle cx="36" cy="58" r="4" fill="none" stroke="#1A1208" stroke-width="1.2" opacity=".3"/>
+        <circle cx="52" cy="58" r="4" fill="none" stroke="#1A1208" stroke-width="1.2" opacity=".3"/>
+        <circle cx="44" cy="66" r="4" fill="none" stroke="#1A1208" stroke-width="1.2" opacity=".3"/>
+        <circle cx="220" cy="70" r="5" fill="none" stroke="#1A1208" stroke-width="1.2" opacity=".3"/>
+        <circle cx="220" cy="63" r="3.5" fill="none" stroke="#1A1208" stroke-width="1.2" opacity=".3"/>
+        <circle cx="213" cy="68" r="3.5" fill="none" stroke="#1A1208" stroke-width="1.2" opacity=".3"/>
+        <circle cx="227" cy="68" r="3.5" fill="none" stroke="#1A1208" stroke-width="1.2" opacity=".3"/>
+        <text x="140" y="244" text-anchor="middle" font-family="Chewy" font-size="13" fill="#C0A880">¡Colorea a Conejita Rosa!</text>
+      </svg>
+    </div>
+    <div class="palette" id="pal4"></div>
+    <div class="tools">
+      <button class="tool er" onclick="setEr(4)">🧹 Borrador</button>
+      <button class="tool" onclick="clr(4)">🗑️ Limpiar</button>
+    </div>
+    <div class="fact">🐰 <strong>¿Sabías que?</strong> Los conejos se saludan tocando sus narices. Conejita Rosa siempre es amable y comparte sus zanahorias con todos. ❤️</div>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d4"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P5 🐶 PERRITO ═══════════════ -->
+<div class="page color-page" id="p5">
+  <div class="paper-texture"></div>
+  <div class="color-layout">
+    <div class="animal-hdr">
+      <div class="a-badge">2</div>
+      <div>
+        <div class="a-name">🐶 Perrito Leal</div>
+        <div class="a-lesson">✨ Enseña la Amistad</div>
+      </div>
+    </div>
+    <div class="drawing-area" id="da5">
+      <svg viewBox="0 0 280 250" id="svg5" xmlns="http://www.w3.org/2000/svg">
+        <!-- Floppy ears -->
+        <ellipse cx="82" cy="110" rx="22" ry="36" fill="white" stroke="#1A1208" stroke-width="2.8" transform="rotate(-8,82,110)" class="c" data-n="5"/>
+        <ellipse cx="168" cy="110" rx="22" ry="36" fill="white" stroke="#1A1208" stroke-width="2.8" transform="rotate(8,168,110)" class="c" data-n="5"/>
+        <!-- Body -->
+        <ellipse cx="125" cy="178" rx="56" ry="50" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="5"/>
+        <!-- Chest patch -->
+        <ellipse cx="125" cy="178" rx="30" ry="32" fill="white" stroke="#1A1208" stroke-width="1.5" stroke-dasharray="4 3" class="c" data-n="5"/>
+        <!-- Head -->
+        <ellipse cx="125" cy="102" rx="46" ry="42" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="5"/>
+        <!-- Snout big -->
+        <ellipse cx="125" cy="118" rx="28" ry="20" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="5"/>
+        <!-- Nose big -->
+        <ellipse cx="125" cy="108" rx="11" ry="8" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="5"/>
+        <circle cx="121" cy="108" r="2.5" fill="#1A1208"/>
+        <circle cx="129" cy="108" r="2.5" fill="#1A1208"/>
+        <!-- Eyes -->
+        <circle cx="110" cy="94" r="8" fill="white" stroke="#1A1208" stroke-width="2.2" class="c" data-n="5"/>
+        <circle cx="140" cy="94" r="8" fill="white" stroke="#1A1208" stroke-width="2.2" class="c" data-n="5"/>
+        <circle cx="110" cy="94" r="4" fill="#1A1208"/>
+        <circle cx="140" cy="94" r="4" fill="#1A1208"/>
+        <circle cx="111.5" cy="92.5" r="1.8" fill="white"/>
+        <circle cx="141.5" cy="92.5" r="1.8" fill="white"/>
+        <!-- Mouth+tongue -->
+        <path d="M113,126 Q125,136 137,126" fill="none" stroke="#1A1208" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="125" cy="133" rx="9" ry="7" fill="white" stroke="#1A1208" stroke-width="1.8" class="c" data-n="5"/>
+        <!-- Collar -->
+        <rect x="104" y="136" width="42" height="11" rx="5.5" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="5"/>
+        <circle cx="125" cy="147" r="5" fill="white" stroke="#1A1208" stroke-width="1.8" class="c" data-n="5"/>
+        <!-- Back spot -->
+        <ellipse cx="108" cy="175" rx="18" ry="20" fill="white" stroke="#1A1208" stroke-width="1.5" stroke-dasharray="4 3" class="c" data-n="5"/>
+        <!-- Paws -->
+        <ellipse cx="92" cy="218" rx="24" ry="11" fill="white" stroke="#1A1208" stroke-width="2.5" class="c" data-n="5"/>
+        <ellipse cx="158" cy="218" rx="24" ry="11" fill="white" stroke="#1A1208" stroke-width="2.5" class="c" data-n="5"/>
+        <!-- Paw pads -->
+        <ellipse cx="85" cy="216" rx="4" ry="3" fill="white" stroke="#1A1208" stroke-width="1"/>
+        <ellipse cx="92" cy="213" rx="4" ry="3" fill="white" stroke="#1A1208" stroke-width="1"/>
+        <ellipse cx="99" cy="216" rx="4" ry="3" fill="white" stroke="#1A1208" stroke-width="1"/>
+        <ellipse cx="151" cy="216" rx="4" ry="3" fill="white" stroke="#1A1208" stroke-width="1"/>
+        <ellipse cx="158" cy="213" rx="4" ry="3" fill="white" stroke="#1A1208" stroke-width="1"/>
+        <ellipse cx="165" cy="216" rx="4" ry="3" fill="white" stroke="#1A1208" stroke-width="1"/>
+        <!-- Tail wagging -->
+        <path d="M174,165 Q204,138 198,158 Q210,135 205,165" fill="white" stroke="#1A1208" stroke-width="2.5" stroke-linejoin="round" class="c" data-n="5"/>
+        <text x="140" y="244" text-anchor="middle" font-family="Chewy" font-size="13" fill="#C0A880">¡Colorea a Perrito Leal!</text>
+      </svg>
+    </div>
+    <div class="palette" id="pal5"></div>
+    <div class="tools">
+      <button class="tool er" onclick="setEr(5)">🧹 Borrador</button>
+      <button class="tool" onclick="clr(5)">🗑️ Limpiar</button>
+    </div>
+    <div class="fact">🐶 <strong>¿Sabías que?</strong> Los perros mueven la cola cuando están felices de verte. ¡Perrito Leal nunca te deja solo y siempre está listo para jugar!</div>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d5"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P6 🐿️ ARDILLA ═══════════════ -->
+<div class="page color-page" id="p6">
+  <div class="paper-texture"></div>
+  <div class="color-layout">
+    <div class="animal-hdr">
+      <div class="a-badge">3</div>
+      <div>
+        <div class="a-name">🐿️ Ardilla Sabia</div>
+        <div class="a-lesson">✨ Enseña el Orden</div>
+      </div>
+    </div>
+    <div class="drawing-area" id="da6">
+      <svg viewBox="0 0 280 250" id="svg6" xmlns="http://www.w3.org/2000/svg">
+        <!-- Big fluffy tail -->
+        <ellipse cx="186" cy="158" rx="44" ry="58" fill="white" stroke="#1A1208" stroke-width="2.8" transform="rotate(18,186,158)" class="c" data-n="6"/>
+        <ellipse cx="183" cy="156" rx="30" ry="44" fill="white" stroke="#1A1208" stroke-width="1.5" stroke-dasharray="4 3" transform="rotate(18,183,156)" class="c" data-n="6"/>
+        <!-- Body -->
+        <ellipse cx="114" cy="175" rx="44" ry="46" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="6"/>
+        <!-- Tummy -->
+        <ellipse cx="114" cy="178" rx="24" ry="28" fill="white" stroke="#1A1208" stroke-width="1.5" stroke-dasharray="3 2" class="c" data-n="6"/>
+        <!-- Head -->
+        <ellipse cx="114" cy="106" rx="40" ry="36" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="6"/>
+        <!-- Tiny ears -->
+        <ellipse cx="95" cy="78" rx="11" ry="18" fill="white" stroke="#1A1208" stroke-width="2.5" class="c" data-n="6"/>
+        <ellipse cx="133" cy="78" rx="11" ry="18" fill="white" stroke="#1A1208" stroke-width="2.5" class="c" data-n="6"/>
+        <ellipse cx="95" cy="79" rx="5" ry="11" fill="white" stroke="#1A1208" stroke-width="1.5" class="c" data-n="6"/>
+        <ellipse cx="133" cy="79" rx="5" ry="11" fill="white" stroke="#1A1208" stroke-width="1.5" class="c" data-n="6"/>
+        <!-- Chubby cheeks (storing nuts) -->
+        <ellipse cx="88" cy="115" rx="18" ry="13" fill="white" stroke="#1A1208" stroke-width="1.8" stroke-dasharray="3 2" class="c" data-n="6"/>
+        <ellipse cx="140" cy="115" rx="18" ry="13" fill="white" stroke="#1A1208" stroke-width="1.8" stroke-dasharray="3 2" class="c" data-n="6"/>
+        <!-- Eyes big cute -->
+        <circle cx="104" cy="101" r="8" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="6"/>
+        <circle cx="124" cy="101" r="8" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="6"/>
+        <circle cx="104" cy="101" r="4.5" fill="#1A1208"/>
+        <circle cx="124" cy="101" r="4.5" fill="#1A1208"/>
+        <circle cx="105.5" cy="99.5" r="2" fill="white"/>
+        <circle cx="125.5" cy="99.5" r="2" fill="white"/>
+        <!-- Nose+smile -->
+        <ellipse cx="114" cy="114" rx="5" ry="4" fill="white" stroke="#1A1208" stroke-width="1.8" class="c" data-n="6"/>
+        <path d="M108,121 Q114,129 120,121" fill="none" stroke="#1A1208" stroke-width="1.8" stroke-linecap="round"/>
+        <!-- Arm holding acorn -->
+        <ellipse cx="84" cy="164" rx="14" ry="9" fill="white" stroke="#1A1208" stroke-width="2.2" transform="rotate(-22,84,164)" class="c" data-n="6"/>
+        <!-- Acorn -->
+        <ellipse cx="72" cy="180" rx="14" ry="11" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="6"/>
+        <ellipse cx="72" cy="188" rx="11" ry="13" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="6"/>
+        <line x1="70" y1="169" x2="70" y2="163" stroke="#1A1208" stroke-width="2.2"/>
+        <path d="M66,163 Q70,158 74,163" fill="none" stroke="#1A1208" stroke-width="1.8"/>
+        <!-- Legs -->
+        <ellipse cx="100" cy="215" rx="20" ry="10" fill="white" stroke="#1A1208" stroke-width="2.5" class="c" data-n="6"/>
+        <ellipse cx="130" cy="215" rx="20" ry="10" fill="white" stroke="#1A1208" stroke-width="2.5" class="c" data-n="6"/>
+        <text x="140" y="244" text-anchor="middle" font-family="Chewy" font-size="13" fill="#C0A880">¡Colorea a Ardilla Sabia!</text>
+      </svg>
+    </div>
+    <div class="palette" id="pal6"></div>
+    <div class="tools">
+      <button class="tool er" onclick="setEr(6)">🧹 Borrador</button>
+      <button class="tool" onclick="clr(6)">🗑️ Limpiar</button>
+    </div>
+    <div class="fact">🐿️ <strong>¿Sabías que?</strong> Las ardillas guardan bellotitas en lugares muy ordenados para el invierno. ¡Ardilla Sabia siempre sabe dónde está todo!</div>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d6"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P7 🦊 ZORRITA ═══════════════ -->
+<div class="page color-page" id="p7">
+  <div class="paper-texture"></div>
+  <div class="color-layout">
+    <div class="animal-hdr">
+      <div class="a-badge">4</div>
+      <div>
+        <div class="a-name">🦊 Zorrita Lista</div>
+        <div class="a-lesson">✨ Enseña a Aprender</div>
+      </div>
+    </div>
+    <div class="drawing-area" id="da7">
+      <svg viewBox="0 0 280 250" id="svg7" xmlns="http://www.w3.org/2000/svg">
+        <!-- Big tail with white tip -->
+        <path d="M164,228 Q218,195 224,148 Q230,108 205,124 Q198,148 178,168 Q160,190 164,228Z" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="7"/>
+        <path d="M167,222 Q210,194 214,155 Q210,132 200,146 Q193,165 176,182 Q164,198 167,222Z" fill="white" stroke="#1A1208" stroke-width="1.5" stroke-dasharray="4 3" class="c" data-n="7"/>
+        <!-- Body -->
+        <ellipse cx="116" cy="175" rx="50" ry="46" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="7"/>
+        <!-- Chest white -->
+        <ellipse cx="116" cy="172" rx="28" ry="30" fill="white" stroke="#1A1208" stroke-width="1.5" stroke-dasharray="4 3" class="c" data-n="7"/>
+        <!-- Head -->
+        <ellipse cx="116" cy="102" rx="44" ry="40" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="7"/>
+        <!-- Pointy ears -->
+        <polygon points="91,74 76,38 110,72" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="7"/>
+        <polygon points="93,74 82,46 108,72" fill="white" stroke="#1A1208" stroke-width="1.5" class="c" data-n="7"/>
+        <polygon points="141,74 156,38 122,72" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="7"/>
+        <polygon points="139,74 150,46 124,72" fill="white" stroke="#1A1208" stroke-width="1.5" class="c" data-n="7"/>
+        <!-- Snout -->
+        <ellipse cx="116" cy="116" rx="22" ry="16" fill="white" stroke="#1A1208" stroke-width="1.8" class="c" data-n="7"/>
+        <!-- Triangle nose -->
+        <polygon points="116,106 108,116 124,116" fill="white" stroke="#1A1208" stroke-width="1.8" class="c" data-n="7"/>
+        <!-- Eyes + lashes -->
+        <ellipse cx="102" cy="96" rx="9" ry="8" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="7"/>
+        <ellipse cx="130" cy="96" rx="9" ry="8" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="7"/>
+        <ellipse cx="102" cy="96" rx="5" ry="5" fill="#1A1208"/>
+        <ellipse cx="130" cy="96" rx="5" ry="5" fill="#1A1208"/>
+        <circle cx="103.5" cy="94.5" r="2" fill="white"/>
+        <circle cx="131.5" cy="94.5" r="2" fill="white"/>
+        <line x1="95" y1="90" x2="91" y2="86" stroke="#1A1208" stroke-width="1.5"/>
+        <line x1="100" y1="88" x2="98" y2="83" stroke="#1A1208" stroke-width="1.5"/>
+        <line x1="105" y1="88" x2="106" y2="83" stroke="#1A1208" stroke-width="1.5"/>
+        <!-- Smile -->
+        <path d="M108,122 Q116,131 124,122" fill="none" stroke="#1A1208" stroke-width="1.8" stroke-linecap="round"/>
+        <!-- Arms holding book -->
+        <ellipse cx="84" cy="162" rx="15" ry="9" fill="white" stroke="#1A1208" stroke-width="2.2" transform="rotate(-22,84,162)" class="c" data-n="7"/>
+        <rect x="54" y="151" width="30" height="36" rx="3" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="7"/>
+        <line x1="69" y1="151" x2="69" y2="187" stroke="#1A1208" stroke-width="1.5"/>
+        <line x1="57" y1="162" x2="67" y2="162" stroke="#1A1208" stroke-width="1"/>
+        <line x1="57" y1="168" x2="67" y2="168" stroke="#1A1208" stroke-width="1"/>
+        <line x1="57" y1="174" x2="67" y2="174" stroke="#1A1208" stroke-width="1"/>
+        <!-- Feet -->
+        <ellipse cx="95" cy="215" rx="22" ry="10" fill="white" stroke="#1A1208" stroke-width="2.5" class="c" data-n="7"/>
+        <ellipse cx="140" cy="215" rx="22" ry="10" fill="white" stroke="#1A1208" stroke-width="2.5" class="c" data-n="7"/>
+        <text x="140" y="244" text-anchor="middle" font-family="Chewy" font-size="13" fill="#C0A880">¡Colorea a Zorrita Lista!</text>
+      </svg>
+    </div>
+    <div class="palette" id="pal7"></div>
+    <div class="tools">
+      <button class="tool er" onclick="setEr(7)">🧹 Borrador</button>
+      <button class="tool" onclick="clr(7)">🗑️ Limpiar</button>
+    </div>
+    <div class="fact">🦊 <strong>¿Sabías que?</strong> Los zorros son súper inteligentes y curiosos. Zorrita Lista ama los libros y aprende algo nuevo cada día del año.</div>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d7"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P8 🐻 OSITO ═══════════════ -->
+<div class="page color-page" id="p8">
+  <div class="paper-texture"></div>
+  <div class="color-layout">
+    <div class="animal-hdr">
+      <div class="a-badge">5</div>
+      <div>
+        <div class="a-name">🐻 Osito Grande</div>
+        <div class="a-lesson">✨ Enseña el Coraje</div>
+      </div>
+    </div>
+    <div class="drawing-area" id="da8">
+      <svg viewBox="0 0 280 250" id="svg8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Round ears -->
+        <circle cx="88" cy="68" r="22" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="8"/>
+        <circle cx="88" cy="68" r="13" fill="white" stroke="#1A1208" stroke-width="1.5" class="c" data-n="8"/>
+        <circle cx="164" cy="68" r="22" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="8"/>
+        <circle cx="164" cy="68" r="13" fill="white" stroke="#1A1208" stroke-width="1.5" class="c" data-n="8"/>
+        <!-- Big body -->
+        <ellipse cx="126" cy="178" rx="62" ry="56" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="8"/>
+        <!-- Tummy -->
+        <ellipse cx="126" cy="184" rx="36" ry="38" fill="white" stroke="#1A1208" stroke-width="1.5" stroke-dasharray="4 3" class="c" data-n="8"/>
+        <!-- Head big -->
+        <ellipse cx="126" cy="104" rx="50" ry="46" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="8"/>
+        <!-- Muzzle -->
+        <ellipse cx="126" cy="120" rx="30" ry="22" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="8"/>
+        <!-- Nose big -->
+        <ellipse cx="126" cy="110" rx="12" ry="8" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="8"/>
+        <circle cx="121" cy="110" r="3" fill="#1A1208"/>
+        <circle cx="131" cy="110" r="3" fill="#1A1208"/>
+        <!-- Eyes round -->
+        <circle cx="110" cy="95" r="9" fill="white" stroke="#1A1208" stroke-width="2.2" class="c" data-n="8"/>
+        <circle cx="142" cy="95" r="9" fill="white" stroke="#1A1208" stroke-width="2.2" class="c" data-n="8"/>
+        <circle cx="110" cy="95" r="5" fill="#1A1208"/>
+        <circle cx="142" cy="95" r="5" fill="#1A1208"/>
+        <circle cx="112" cy="93" r="2" fill="white"/>
+        <circle cx="144" cy="93" r="2" fill="white"/>
+        <!-- Smile -->
+        <path d="M114,130 Q126,142 138,130" fill="none" stroke="#1A1208" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- Arms big -->
+        <ellipse cx="80" cy="167" rx="24" ry="15" fill="white" stroke="#1A1208" stroke-width="2.5" transform="rotate(-28,80,167)" class="c" data-n="8"/>
+        <ellipse cx="172" cy="167" rx="24" ry="15" fill="white" stroke="#1A1208" stroke-width="2.5" transform="rotate(28,172,167)" class="c" data-n="8"/>
+        <!-- Hands -->
+        <ellipse cx="62" cy="178" rx="16" ry="11" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="8"/>
+        <ellipse cx="190" cy="178" rx="16" ry="11" fill="white" stroke="#1A1208" stroke-width="2" class="c" data-n="8"/>
+        <!-- Feet round -->
+        <ellipse cx="104" cy="222" rx="28" ry="14" fill="white" stroke="#1A1208" stroke-width="2.5" class="c" data-n="8"/>
+        <ellipse cx="150" cy="222" rx="28" ry="14" fill="white" stroke="#1A1208" stroke-width="2.5" class="c" data-n="8"/>
+        <text x="140" y="244" text-anchor="middle" font-family="Chewy" font-size="13" fill="#C0A880">¡Colorea a Osito Grande!</text>
+      </svg>
+    </div>
+    <div class="palette" id="pal8"></div>
+    <div class="tools">
+      <button class="tool er" onclick="setEr(8)">🧹 Borrador</button>
+      <button class="tool" onclick="clr(8)">🗑️ Limpiar</button>
+    </div>
+    <div class="fact">🐻 <strong>¿Sabías que?</strong> Los osos son valientes y protegen a su familia con mucho amor. Osito Grande se anima siempre a probar cosas nuevas. 💪</div>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d8"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P9 🐱 GATITA ═══════════════ -->
+<div class="page color-page" id="p9">
+  <div class="paper-texture"></div>
+  <div class="color-layout">
+    <div class="animal-hdr">
+      <div class="a-badge">6</div>
+      <div>
+        <div class="a-name">🐱 Gatita Dulce</div>
+        <div class="a-lesson">✨ Enseña la Calma</div>
+      </div>
+    </div>
+    <div class="drawing-area" id="da9">
+      <svg viewBox="0 0 280 250" id="svg9" xmlns="http://www.w3.org/2000/svg">
+        <!-- Tail curled -->
+        <path d="M162,218 Q208,206 218,172 Q228,138 206,128 Q190,122 188,140 Q190,162 170,176 Q150,188 162,218Z" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="9"/>
+        <!-- Striped tail detail -->
+        <path d="M165,212 Q205,200 210,170 Q205,148 198,152 Q192,170 174,182 Q156,194 165,212Z" fill="white" stroke="#1A1208" stroke-width="1.5" stroke-dasharray="5 4" class="c" data-n="9"/>
+        <!-- Body -->
+        <ellipse cx="114" cy="175" rx="52" ry="48" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="9"/>
+        <!-- Tummy stripe -->
+        <ellipse cx="114" cy="178" rx="28" ry="32" fill="white" stroke="#1A1208" stroke-width="1.5" stroke-dasharray="3 3" class="c" data-n="9"/>
+        <!-- Head -->
+        <ellipse cx="114" cy="102" rx="46" ry="42" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="9"/>
+        <!-- Pointy cat ears -->
+        <polygon points="87,74 74,40 108,72" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="9"/>
+        <polygon points="89,74 79,48 106,72" fill="white" stroke="#1A1208" stroke-width="1.5" class="c" data-n="9"/>
+        <polygon points="141,74 154,40 120,72" fill="white" stroke="#1A1208" stroke-width="2.8" class="c" data-n="9"/>
+        <polygon points="139,74 149,48 122,72" fill="white" stroke="#1A1208" stroke-width="1.5" class="c" data-n="9"/>
+        <!-- Eyes cat almond -->
+        <ellipse cx="100" cy="98" rx="10" ry="9" fill="white" stroke="#1A1208" stroke-width="2.2" class="c" data-n="9"/>
+        <ellipse cx="128" cy="98" rx="10" ry="9" fill="white" stroke="#1A1208" stroke-width="2.2" class="c" data-n="9"/>
+        <ellipse cx="100" cy="98" rx="5" ry="7" fill="#1A1208"/>
+        <ellipse cx="128" cy="98" rx="5" ry="7" fill="#1A1208"/>
+        <circle cx="101.5" cy="96" r="2" fill="white"/>
+        <circle cx="129.5" cy="96" r="2" fill="white"/>
+        <!-- Cat lashes -->
+        <line x1="92" y1="92" x2="88" y2="87" stroke="#1A1208" stroke-width="1.8"/>
+        <line x1="97" y1="89" x2="95" y2="84" stroke="#1A1208" stroke-width="1.8"/>
+        <line x1="103" y1="89" x2="104" y2="84" stroke="#1A1208" stroke-width="1.8"/>
+        <!-- Tiny nose -->
+        <polygon points="114,112 108,120 120,120" fill="white" stroke="#1A1208" stroke-width="1.8" class="c" data-n="9"/>
+        <!-- Whiskers -->
+        <line x1="82" y1="114" x2="108" y2="116" stroke="#1A1208" stroke-width="1.5"/>
+        <line x1="82" y1="120" x2="108" y2="118" stroke="#1A1208" stroke-width="1.5"/>
+        <line x1="120" y1="116" x2="146" y2="114" stroke="#1A1208" stroke-width="1.5"/>
+        <line x1="120" y1="118" x2="146" y2="120" stroke="#1A1208" stroke-width="1.5"/>
+        <!-- Bow on head -->
+        <path d="M104,76 Q114,70 124,76 Q114,85 104,76Z" fill="white" stroke="#1A1208" stroke-width="1.8" class="c" data-n="9"/>
+        <circle cx="114" cy="76" r="5" fill="white" stroke="#1A1208" stroke-width="1.8" class="c" data-n="9"/>
+        <!-- Cat smile -->
+        <path d="M108,122 Q114,130 120,122" fill="none" stroke="#1A1208" stroke-width="1.8" stroke-linecap="round"/>
+        <!-- Paws -->
+        <ellipse cx="82" cy="218" rx="24" ry="11" fill="white" stroke="#1A1208" stroke-width="2.2" class="c" data-n="9"/>
+        <ellipse cx="148" cy="218" rx="24" ry="11" fill="white" stroke="#1A1208" stroke-width="2.2" class="c" data-n="9"/>
+        <!-- Claw marks -->
+        <line x1="75" y1="218" x2="72" y2="224" stroke="#1A1208" stroke-width="1.2"/>
+        <line x1="80" y1="220" x2="78" y2="226" stroke="#1A1208" stroke-width="1.2"/>
+        <line x1="141" y1="218" x2="138" y2="224" stroke="#1A1208" stroke-width="1.2"/>
+        <line x1="146" y1="220" x2="144" y2="226" stroke="#1A1208" stroke-width="1.2"/>
+        <text x="140" y="244" text-anchor="middle" font-family="Chewy" font-size="13" fill="#C0A880">¡Colorea a Gatita Dulce!</text>
+      </svg>
+    </div>
+    <div class="palette" id="pal9"></div>
+    <div class="tools">
+      <button class="tool er" onclick="setEr(9)">🧹 Borrador</button>
+      <button class="tool" onclick="clr(9)">🗑️ Limpiar</button>
+    </div>
+    <div class="fact">🐱 <strong>¿Sabías que?</strong> Los gatos ronronean cuando están tranquilos. Gatita Dulce te enseña a respirar profundo y encontrar la calma. 😌</div>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d9"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P10 VALORES ═══════════════ -->
+<div class="page txt-page" id="p10">
+  <div class="paper-texture"></div>
+  <div class="txt-body">
+    <div class="pg-label">🌟 Lo que aprendimos</div>
+    <div class="pg-h1">Mis amigos me<br><em>enseñaron...</em></div>
+    <div class="card" style="border-left-color:#FF85B3;"><div class="card-icon">🐰</div><div><div class="card-t">Conejita Rosa</div><div class="card-s">La amabilidad: tratar bien a todos ❤️</div></div></div>
+    <div class="card" style="border-left-color:var(--sky);"><div class="card-icon">🐶</div><div><div class="card-t">Perrito Leal</div><div class="card-s">La amistad: estar siempre para los demás 🤝</div></div></div>
+    <div class="card" style="border-left-color:var(--peach);"><div class="card-icon">🐿️</div><div><div class="card-t">Ardilla Sabia</div><div class="card-s">El orden: un lugar para cada cosa 📦</div></div></div>
+    <div class="card" style="border-left-color:var(--sage);"><div class="card-icon">🦊</div><div><div class="card-t">Zorrita Lista</div><div class="card-s">Aprender: preguntar y leer cada día 📚</div></div></div>
+    <div class="card" style="border-left-color:var(--lavender);"><div class="card-icon">🐻</div><div><div class="card-t">Osito Grande</div><div class="card-s">El coraje: intentar cosas nuevas 💪</div></div></div>
+    <div class="card" style="border-left-color:var(--mint,#63E6BE);"><div class="card-icon">🐱</div><div><div class="card-t">Gatita Dulce</div><div class="card-s">La calma: respirar y relajarse 😌</div></div></div>
+    <div class="tip-box">🎨 <strong>Tip:</strong> Pregunta a tu hijo: <em>"¿Qué animal te gustó más colorear y qué aprendiste de él?"</em> ¡Te sorprenderá la respuesta!</div>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d10"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P11 RUTINA ═══════════════ -->
+<div class="page txt-page" id="p11">
+  <div class="paper-texture"></div>
+  <div class="txt-body">
+    <div class="pg-label">⏰ Rutina Semanal</div>
+    <div class="pg-h1">La Regla de los<br><em>10 Minutos ☕</em></div>
+    <div class="body-p">Aplícala <strong>cada día</strong> y en 2 semanas tu niño pedirá colorear solo. ¡Palabra de mamá!</div>
+    <div class="time-row"><div class="time-tag morn">🌅<br>Lunes<br>Martes</div><div class="time-items"><div class="ti">🐰 Colorea a Conejita</div><div class="ti">🐶 Colorea a Perrito</div><div class="ti" style="font-size:10px;color:#AAA;">Aprende: Amabilidad + Amistad</div></div></div>
+    <div class="time-row"><div class="time-tag noon">☀️<br>Mié<br>Jueves</div><div class="time-items"><div class="ti">🐿️ Colorea a Ardilla</div><div class="ti">🦊 Colorea a Zorrita</div><div class="ti" style="font-size:10px;color:#AAA;">Aprende: Orden + Curiosidad</div></div></div>
+    <div class="time-row"><div class="time-tag nght">🌙<br>Vier<br>Fin de<br>semana</div><div class="time-items"><div class="ti">🐻 Colorea a Osito</div><div class="ti">🐱 Colorea a Gatita</div><div class="ti" style="font-size:10px;color:#AAA;">Aprende: Coraje + Calma</div></div></div>
+    <div class="tip-box"><strong>🔬 Dato real:</strong> Colorear 10-15 min diarios desarrolla concentración, motricidad fina y creatividad en niños de 2-6 años. Los efectos se notan en 2 semanas.</div>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d11"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P12 DIPLOMA ═══════════════ -->
+<div class="page txt-page" id="p12">
+  <div class="paper-texture"></div>
+  <div class="txt-body">
+    <div class="pg-label">🏆 Premio Oficial</div>
+    <div class="pg-h1">¡Tu Diploma<br><em>de Artista!</em></div>
+    <div class="dip-frame">
+      <div class="dip-top">✦ Certificado Oficial ✦</div>
+      <div class="dip-main">🎨 Gran Artista Animal</div>
+      <div class="dip-sub">Este diploma se entrega con todo el amor a:</div>
+      <input class="dip-in" id="dname" placeholder="✏️ Escribe tu nombre aquí" maxlength="22">
+      <div class="dip-animals-row">🐰🐶🐿️🦊🐻🐱</div>
+      <div style="font-size:11px;font-weight:700;color:#7A5500;margin-bottom:6px;line-height:1.5;">
+        Por colorear a todos sus amigos animales<br>y aprender: amabilidad, amistad, orden,<br>curiosidad, coraje y calma. 🌟
+      </div>
+      <div class="dip-footer">
+        ⭐ La Regla de los 10 Minutos — Conexión Total ⭐<br>
+        <span style="font-size:8px;">Imprime y cuelga este diploma en el cuarto de tu héroe</span>
+      </div>
+    </div>
+    <button style="align-self:center;background:var(--amber);color:#fff;border:none;border-radius:50px;padding:10px 26px;font-family:Nunito,sans-serif;font-size:13px;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(232,137,12,.4);transition:all .2s;" onclick="boom();go(1)">
+      🎉 ¡Celebrar y finalizar!
+    </button>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d12"></div>
+    <button class="nbtn nbtn-next" onclick="go(1)">Finalizar →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ P13 FINAL ═══════════════ -->
+<div class="page" id="p13">
+  <div class="final-wrap">
+    <div style="font-size:80px;animation:wa 2.5s ease-in-out infinite;">🌟</div>
+    <div class="final-big">¡Misión Cumplida!</div>
+    <div class="cover-animals-row" style="font-size:32px;">
+      <span class="cov-a">🐰</span><span class="cov-a">🐶</span><span class="cov-a">🐿️</span><span class="cov-a">🦊</span><span class="cov-a">🐻</span>
+    </div>
+    <div class="final-sub">Completaste <strong style="color:var(--brown)">La Regla de los 10 Minutos</strong>. Tu pequeño tiene 6 nuevos amigos y 6 valores para siempre.</div>
+    <div class="final-box"><strong>☕ Para mamá:</strong> Espero que hayas disfrutado tu pausa. Te la mereces. Una mamá recargada es la mejor mamá del mundo. ¡Sigue usando este libro!</div>
+    <div class="final-box"><strong>💌 ¿Te gustó?</strong> Compártelo con otras mamás que también merecen sus 10 minutos de paz. ¡Juntas somos más fuertes! 💕</div>
+    <div class="credit">© La Regla de los 10 Minutos · Todos los derechos reservados<br>Hecho con amor para mamás extraordinarias 💜</div>
+    <button class="restart" onclick="restart()">🔄 Leer de nuevo</button>
+  </div>
+  <div class="nav">
+    <button class="nbtn nbtn-back" onclick="go(-1)">←</button>
+    <div class="pg-dots" id="d13"></div>
+    <button class="nbtn nbtn-back" disabled>Fin 🎉</button>
+  </div>
+</div>
+
+</div><!-- /book -->
+
+<script>
+// ─── NAV ────────────────────────────────────
+const TOTAL=14;
+let cur=0;
+function go(d){
+  const n=cur+d;
+  if(n<0||n>=TOTAL)return;
+  const pp=document.querySelectorAll('.page');
+  pp[cur].classList.remove('active');
+  pp[cur].classList.add('gone');
+  pp[n].classList.remove('gone');
+  pp[n].classList.add('active');
+  cur=n;
+  buildAllDots();
+  setTimeout(()=>pp.forEach((p,i)=>{ if(i!==cur)p.classList.remove('gone'); }),520);
+}
+function restart(){
+  const pp=document.querySelectorAll('.page');
+  pp[cur].classList.remove('active');
+  pp.forEach(p=>p.classList.remove('active','gone'));
+  pp[0].classList.add('active');
+  cur=0; buildAllDots();
+}
+function buildAllDots(){
+  for(let i=0;i<TOTAL;i++){
+    const el=document.getElementById(`d${i}`);
+    if(!el)continue;
+    el.innerHTML='';
+    const start=Math.max(0,Math.min(cur-3,TOTAL-7));
+    const end=Math.min(TOTAL-1,start+6);
+    for(let j=start;j<=end;j++){
+      const d=document.createElement('div');
+      d.className='dot'+(j===cur?' on':'');
+      el.appendChild(d);
+    }
+  }
+}
+buildAllDots();
+
+// swipe
+let tx=0;
+document.getElementById('book').addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+document.getElementById('book').addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>48) go(dx<0?1:-1);
+},{passive:true});
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight')go(1);
+  if(e.key==='ArrowLeft')go(-1);
+});
+
+// ─── TIMER ────────────────────────────────────
+let tSec=600,tRun=false,tInt=null;
+function toggleTimer(){
+  if(tRun){ clearInterval(tInt);tRun=false;document.getElementById('tbtn').textContent='▶ Continuar'; return; }
+  if(tSec<=0)tSec=600;
+  tRun=true; document.getElementById('tbtn').textContent='⏸ Pausar';
+  tInt=setInterval(()=>{
+    tSec--;
+    const m=Math.floor(tSec/60),s=tSec%60;
+    document.getElementById('tnum').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if(tSec<=0){
+      clearInterval(tInt);tRun=false;
+      document.getElementById('tnum').textContent='¡Listo!';
+      document.getElementById('tlbl').textContent='☕ ¡Ese descanso te lo merecías!';
+      document.getElementById('tbtn').textContent='🔄 Reiniciar';
+      tSec=600; boom();
+    }
+  },1000);
+}
+
+// ─── COLORING ─────────────────────────────────
+const PALS={
+  4:['#FFB6C1','#FF85A1','#FFD700','#B0D8FF','#B5EAB5','#EAB5FF','#FF9966','#FFFDF9','#F2D2A9','#FFE4F0'],
+  5:['#C4824A','#E8A87C','#F9D29D','#FFD700','#B0D8FF','#FF7755','#FFFDF9','#7B3F00','#FFDEAD','#A8D8A8'],
+  6:['#E8890C','#F5C842','#D2691E','#8B5E3C','#A8D5A2','#FFFDF9','#C0C0C0','#B0D8FF','#FF8C00','#FFF3DC'],
+  7:['#E8340A','#FF7733','#F5C842','#FFF8DC','#FFFDF9','#D2691E','#7B3F00','#B0D8FF','#A8D5A2','#FFDEAD'],
+  8:['#8B5E3C','#C4824A','#D2B48C','#F9D29D','#FFD700','#FF7755','#FFFDF9','#FFDEAD','#228B22','#B0D8FF'],
+  9:['#FFB6C1','#FF69B4','#EAB5FF','#DDA0FF','#FFFDF9','#FFD700','#B0D8FF','#D2691E','#F9D29D','#A8D5A2']
+};
+const curCol={}, isEr={};
+
+function buildAll(){
+  for(let pg=4;pg<=9;pg++){
+    curCol[pg]=PALS[pg][0]; isEr[pg]=false;
+    const pal=document.getElementById(`pal${pg}`);
+    PALS[pg].forEach((c,i)=>{
+      const sw=document.createElement('div');
+      sw.className='swatch'+(i===0?' on':'');
+      sw.style.background=c;
+      const isLight=['#FFFDF9','#FFF8DC','#FFFBEF','#FFF3DC'].includes(c);
+      if(isLight) sw.style.boxShadow='0 0 0 1.5px #ddd,0 2px 6px rgba(0,0,0,.1)';
+      sw.onclick=()=>{
+        pal.querySelectorAll('.swatch').forEach(s=>s.classList.remove('on'));
+        sw.classList.add('on');
+        curCol[pg]=c; isEr[pg]=false;
+      };
+      pal.appendChild(sw);
+    });
+    wireSvg(pg);
+  }
+}
+
+function wireSvg(pg){
+  document.querySelectorAll(`#svg${pg} .c`).forEach(el=>{
+    el.style.cursor='pointer';
+    const paint=()=>{ el.style.fill=isEr[pg]?'white':curCol[pg]; };
+    el.addEventListener('click',paint);
+    el.addEventListener('touchend',e=>{ e.preventDefault(); paint(); },{passive:false});
+  });
+}
+
+function setEr(pg){
+  isEr[pg]=true;
+  document.getElementById(`pal${pg}`).querySelectorAll('.swatch').forEach(s=>s.classList.remove('on'));
+}
+
+function clr(pg){
+  document.querySelectorAll(`#svg${pg} .c`).forEach(el=>el.style.fill='white');
+  isEr[pg]=false;
+  const pal=document.getElementById(`pal${pg}`);
+  pal.querySelectorAll('.swatch').forEach(s=>s.classList.remove('on'));
+  pal.querySelector('.swatch').classList.add('on');
+  curCol[pg]=PALS[pg][0];
+}
+
+buildAll();
+
+// ─── CONFETTI ─────────────────────────────────
+function boom(){
+  const box=document.getElementById('cb');
+  const cols=['#F5C842','#E8890C','#A8D5A2','#FFB6C1','#B0D8FF','#EAB5FF','#FF9966','#C4824A'];
+  for(let i=0;i<65;i++){
+    setTimeout(()=>{
+      const p=document.createElement('div');
+      p.className='cf';
+      p.style.cssText=`left:${Math.random()*100}%;top:-10px;background:${cols[~~(Math.random()*cols.length)]};width:${7+Math.random()*8}px;height:${7+Math.random()*8}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.3+Math.random()*1.5}s;`;
+      box.appendChild(p);
+      setTimeout(()=>p.remove(),3000);
+    },i*28);
+  }
+}
+</script>
+</body>
+</html>
